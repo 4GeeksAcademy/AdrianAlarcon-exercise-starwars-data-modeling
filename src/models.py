@@ -1,6 +1,6 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy import create_engine
 from eralchemy2 import render_er
@@ -12,14 +12,14 @@ class User(Base):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     username = Column(String(20), nullable=False, unique=True)
-    firstname = Column(String(20))
-    lastname = Column(String(20))
+    firstname = Column(String(20), nullable=False)
+    lastname = Column(String(20), nullable=False)
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
     subscription_date = Column(DateTime, default=datetime.utcnow)
 
-class Characters(Base):
-    __tablename__ = 'characters'
+class Character(Base):
+    __tablename__ = 'character'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False)
     birth_year = Column(String(10))
@@ -30,10 +30,13 @@ class Characters(Base):
     mass = Column(String(10))
     skin_color = Column(String(20))
     homeworld = Column(String(100))
+    created = Column(DateTime)
+    edited = Column(DateTime)
     image_url = Column(String(250))
+    url = Column(String(250))
 
-class Planets(Base):
-    __tablename__ = 'planets'
+class Planet(Base):
+    __tablename__ = 'planet'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False)
     climate = Column(String(50))
@@ -44,10 +47,13 @@ class Planets(Base):
     rotation_period = Column(String(20))
     surface_water = Column(String(20))
     terrain = Column(String(50))
+    created = Column(DateTime)
+    edited = Column(DateTime)
     image_url = Column(String(250))
-   
-class Vehicles(Base):
-    __tablename__ = 'vehicles'
+    url = Column(String(250))
+
+class Vehicle(Base):
+    __tablename__ = 'vehicle'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False)
     model = Column(String(50))
@@ -60,8 +66,11 @@ class Vehicles(Base):
     cargo_capacity = Column(String(20))
     consumables = Column(String(50))
     vehicle_class = Column(String(50))
+    created = Column(DateTime)
+    edited = Column(DateTime)
     image_url = Column(String(250))
-   
+    url = Column(String(250))
+
 class Favorites(Base):
     __tablename__ = 'favorites'   
     id = Column(Integer, primary_key=True)
@@ -70,10 +79,10 @@ class Favorites(Base):
     planet_id = Column(Integer, ForeignKey('planet.id'), nullable=True)
     vehicle_id = Column(Integer, ForeignKey('vehicle.id'), nullable=True)
 
-    user = relationship(User, backref='favorites')
-    character = relationship(Characters)
-    planet = relationship(Planets)
-    vehicle = relationship(Vehicles)
+    user = relationship('User', backref='favorites')
+    character = relationship('Character', backref='favorites')
+    planet = relationship('Planet', backref='favorites')
+    vehicle = relationship('Vehicle', backref='favorites')
 
 ## Draw from SQLAlchemy base
 try:
