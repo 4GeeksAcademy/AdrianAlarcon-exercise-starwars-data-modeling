@@ -8,6 +8,11 @@ from datetime import datetime
 
 Base = declarative_base()
 
+# !!!
+# No estoy seguro de que informacion es necesaria en cada tabla ni hace falta una tabla de imagenes aparte. 
+# He dado por hecho que seria una url de una imagen de internet
+# !!!
+
 class User(Base):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
