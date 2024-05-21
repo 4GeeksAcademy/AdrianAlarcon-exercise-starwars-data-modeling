@@ -8,11 +8,6 @@ from datetime import datetime
 
 Base = declarative_base()
 
-# !!!
-# No estoy seguro de que informacion es necesaria en cada tabla ni hace falta una tabla de imagenes aparte. 
-# He dado por hecho que seria una url de una imagen de internet
-# !!!
-
 class User(Base):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
@@ -22,6 +17,16 @@ class User(Base):
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
     subscription_date = Column(DateTime, default=datetime.utcnow)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "firstname": self.firstname,
+            "lastname": self.lastname,
+            "email": self.email,
+            "subscription_date": self.subscription_date.isoformat(),
+        }
 
 class Character(Base):
     __tablename__ = 'character'
@@ -35,10 +40,20 @@ class Character(Base):
     mass = Column(String(10))
     skin_color = Column(String(20))
     homeworld = Column(String(100))
-    created = Column(DateTime)
-    edited = Column(DateTime)
-    image_url = Column(String(250))
-    url = Column(String(250))
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "birth_year": self.birth_year,
+            "eye_color": self.eye_color,
+            "gender": self.gender,
+            "hair_color": self.hair_color,
+            "height": self.height,
+            "mass": self.mass,
+            "skin_color": self.skin_color,
+            "homeworld": self.homeworld,
+        }
 
 class Planet(Base):
     __tablename__ = 'planet'
@@ -52,10 +67,20 @@ class Planet(Base):
     rotation_period = Column(String(20))
     surface_water = Column(String(20))
     terrain = Column(String(50))
-    created = Column(DateTime)
-    edited = Column(DateTime)
-    image_url = Column(String(250))
-    url = Column(String(250))
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "climate": self.climate,
+            "diameter": self.diameter,
+            "gravity": self.gravity,
+            "orbital_period": self.orbital_period,
+            "population": self.population,
+            "rotation_period": self.rotation_period,
+            "surface_water": self.surface_water,
+            "terrain": self.terrain,
+        }
 
 class Vehicle(Base):
     __tablename__ = 'vehicle'
@@ -71,10 +96,22 @@ class Vehicle(Base):
     cargo_capacity = Column(String(20))
     consumables = Column(String(50))
     vehicle_class = Column(String(50))
-    created = Column(DateTime)
-    edited = Column(DateTime)
-    image_url = Column(String(250))
-    url = Column(String(250))
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "model": self.model,
+            "manufacturer": self.manufacturer,
+            "cost_in_credits": self.cost_in_credits,
+            "length": self.length,
+            "max_atmosphering_speed": self.max_atmosphering_speed,
+            "crew": self.crew,
+            "passengers": self.passengers,
+            "cargo_capacity": self.cargo_capacity,
+            "consumables": self.consumables,
+            "vehicle_class": self.vehicle_class,
+        }
 
 class Favorites(Base):
     __tablename__ = 'favorites'   
@@ -89,7 +126,16 @@ class Favorites(Base):
     planet = relationship('Planet', backref='favorites')
     vehicle = relationship('Vehicle', backref='favorites')
 
-## Draw from SQLAlchemy base
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "character_id": self.character_id,
+            "planet_id": self.planet_id,
+            "vehicle_id": self.vehicle_id,
+        }
+
+# Draw from SQLAlchemy base
 try:
     result = render_er(Base, 'diagram.png')
     print("Success! Check the diagram.png file")
