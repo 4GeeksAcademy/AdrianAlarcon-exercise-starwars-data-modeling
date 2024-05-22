@@ -39,7 +39,9 @@ class Character(Base):
     height = Column(String(10))
     mass = Column(String(10))
     skin_color = Column(String(20))
-    homeworld = Column(String(100))
+    homeworld = Column(String, ForeignKey('planet.name'), nullable=True)
+    
+    planet = relationship('Planet')
 
     def serialize(self):
         return {
